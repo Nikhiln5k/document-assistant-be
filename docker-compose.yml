@@ -1,0 +1,16 @@
+services:
+  db:
+    image: pgvector/pgvector:0.8.1-pg18   # match RDS major version + pgvector version
+    container_name: documind-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: document_assistant
+    ports:
+      - "5433:5432"          # 5433 so it doesn't clash with your local Postgres 18
+    volumes:
+      - pgdata:/var/lib/postgresql   # PG18 images store data under /var/lib/postgresql
+
+volumes:
+  pgdata:
