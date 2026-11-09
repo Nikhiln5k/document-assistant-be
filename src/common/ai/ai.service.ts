@@ -41,12 +41,17 @@ export class AiService {
       },
     });
 
-    // OpenRouter tries the models in order, so the second one is a fallback.
+    // OpenRouter tries the models in order, so the later ones are fallbacks.
+    // Both Gemma models are served from the same shared Google AI Studio pool and
+    // get rate limited together, so the last fallback must come from a different
+    // provider. It also has to accept images, since document OCR goes through chat.
     this.chatModels = [
       configService.get<string>('OPENROUTER_CHAT_MODEL') ??
         'google/gemma-4-31b-it:free',
       configService.get<string>('OPENROUTER_FALLBACK_CHAT_MODEL') ??
         'google/gemma-4-26b-a4b-it:free',
+      configService.get<string>('OPENROUTER_SECONDARY_FALLBACK_CHAT_MODEL') ??
+        'nvidia/nemotron-3.5-super-vl:free',
     ];
     this.embeddingModel =
       configService.get<string>('OPENROUTER_EMBEDDING_MODEL') ??
